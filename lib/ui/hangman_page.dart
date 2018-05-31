@@ -65,6 +65,63 @@ class _HangmanPageState extends State<HangmanPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Container();
+    return new Scaffold(
+      backgroundColor: Colors.white,
+      appBar: new AppBar(
+        title: new Text('Hangman'),
+      ),
+      body: new Center(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Expanded(
+              child: new Image.asset(_activeImage),
+            ),
+            new Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: new Center(
+                child: new Text(
+                  _activeWord,
+                  style: activeWordStyle,
+                ),
+              ),
+            ),
+            new Expanded(
+              child: new Center(
+                child: this._renderBottomContent(),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _renderBottomContent() {
+    if (_showNewGame) {
+      return new RaisedButton(
+        child: new Text('New Game'),
+        onPressed: this._newGame,
+      );
+    } else {
+      final Set<String> lettersGuessed = widget._engine.lettersGuessed;
+
+      return new Wrap(
+        spacing: 1.0,
+        runSpacing: 1.0,
+        alignment: WrapAlignment.center,
+        children: alphabet
+            .map((letter) => new MaterialButton(
+                  child: new Text(letter),
+                  padding: const EdgeInsets.all(2.0),
+                  onPressed: lettersGuessed.contains(letter)
+                      ? null
+                      : () {
+                          widget._engine.guessLetter(letter);
+                        },
+                ))
+            .toList(),
+      );
+    }
   }
 }
